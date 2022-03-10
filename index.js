@@ -104,7 +104,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     const calcedNum = execute(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
 
-    console.log('Calculated build number from tag as', calcedNum.stdout);
+    console.log('Calculated build number from tag as', calcedNum);
     
     //update build Number here
     updateBuildNumber(newBuild);
@@ -205,11 +205,11 @@ function execute(command) {
   exec(command, (error, stdout, stderr) => {
     if (error) {
         console.log(`error: ${error.message}`);
-        return;
+        return error.message;
     }
     if (stderr) {
         console.log(`stderr: ${stderr}`);
-        return;
+        return stderr;
     }
     console.log(`stdout: ${stdout}`);
     return stdout;
