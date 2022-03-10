@@ -102,7 +102,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     await runInWorkspace('git', ['checkout', currentBranch]);
     console.log('Step 3');
 
-    let calcedNum = execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`).toString().split("/")[1];
+    let calcedNum = execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
 
     console.log('Calculated build number from tag as', calcedNum);
     
