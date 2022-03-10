@@ -46,50 +46,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
     return;
   }
 
-  // input wordings for MAJOR, MINOR, PATCH, PRE-RELEASE
-  // const majorWords = process.env['INPUT_MAJOR-WORDING'].split(',');
-  // const minorWords = process.env['INPUT_MINOR-WORDING'].split(',');
-  // // patch is by default empty, and '' would always be true in the includes(''), thats why we handle it separately
-  // const patchWords = process.env['INPUT_PATCH-WORDING'] ? process.env['INPUT_PATCH-WORDING'].split(',') : null;
-  // const preReleaseWords = process.env['INPUT_RC-WORDING'] ? process.env['INPUT_RC-WORDING'].split(',') : null;
-
-  // console.log('config words:', { majorWords, minorWords, patchWords, preReleaseWords });
-
   // get default version bump
   let version = process.env.INPUT_DEFAULT;
   let foundWord = null;
   // get the pre-release prefix specified in action
   let preid = process.env.INPUT_PREID;
-
-  
-
-  // console.log('version action after first waterfall:', version);
-
-  // case: if default=prerelease,
-  // rc-wording is also set
-  // and does not include any of rc-wording
-  // then unset it and do not run
-  // if (
-  //   version === 'prerelease' &&
-  //   preReleaseWords &&
-  //   !messages.some((message) => preReleaseWords.some((word) => message.includes(word)))
-  // ) {
-  //   version = null;
-  // }
-
-  // case: if default=prerelease, but rc-wording is NOT set
-  // if (version === 'prerelease' && preid) {
-  //   version = 'prerelease';
-  //   version = `${version} --preid=${preid}`;
-  // }
-
-  // console.log('version action after final decision:', version);
-
-  // case: if nothing of the above matches
-  // if (!version) {
-  //   exitSuccess('No version keywords found, skipping bump.');
-  //   return;
-  // }
 
   // case: if user sets push to false, to skip pushing new tag/package.json
   const push = process.env['INPUT_PUSH'];
@@ -126,16 +87,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('currentBranch:', currentBranch);
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
-    // await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
-    // console.log('currentVersion:', currentVersion, '/', 'version:', version);
     console.log('currentBuild:', currentBuild);
     console.log('newBuild:', newBuild);
-    // let newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
-    // newVersion = `${tagPrefix}${newVersion}`;
-    if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
-      console.log('Step 0');
-      // await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, newBuild)]);
-    }
+    
     console.log('Step 1');
 
     // now go to the actual branch to perform the same versioning
@@ -147,16 +101,15 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('Step 2');
     await runInWorkspace('git', ['checkout', currentBranch]);
     console.log('Step 3');
-    // await runInWorkspace('npm', ['version', '--allow-same-version=true', '--git-tag-version=false', currentVersion]);
-    // console.log('current:', currentVersion, '/', 'version:', version); 
-    // newVersion = execSync(`npm version --git-tag-version=false ${version}`).toString().trim().replace(/^v/, '');
+
+    let calcedNum = execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`).toString().split("/")[1];
+
+    console.log('Calculated build number from tag');
     
     //update build Number here
     updateBuildNumber(newBuild);
     
     console.log('buildNumber in package.json', getPackageJson().buildNumber);
-    // newVersion = `${tagPrefix}${newVersion}`;
-    // console.log(`::set-output name=newTag::${newVersion}`);
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
