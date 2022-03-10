@@ -102,9 +102,9 @@ const workspace = process.env.GITHUB_WORKSPACE;
     await runInWorkspace('git', ['checkout', currentBranch]);
     console.log('Step 3');
 
-    const calcedNum = spawn(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
+    const calcedNum = execute(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
 
-    console.log('Calculated build number from tag as', calcedNum);
+    console.log('Calculated build number from tag as', calcedNum.stdout);
     
     //update build Number here
     updateBuildNumber(newBuild);
@@ -199,4 +199,19 @@ function runInWorkspace(command, args) {
     });
   });
   //return execa(command, args, { cwd: workspace });
+}
+
+function execute(command) {
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+    }
+    if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return;
+    }
+    console.log(`stdout: ${stdout}`);
+    return stdout;
+});
 }
