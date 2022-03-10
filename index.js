@@ -104,7 +104,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     let calcedNum = execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`).toString().split("/")[1];
 
-    console.log('Calculated build number from tag');
+    console.log('Calculated build number from tag as', calcedNum);
     
     //update build Number here
     updateBuildNumber(newBuild);
