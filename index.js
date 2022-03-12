@@ -90,6 +90,18 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('currentBuild:', currentBuild);
     console.log('newBuild:', newBuild);
     
+    exec("ls -la", (error, stdout, stderr) => {
+      if (error) {
+          console.log(`error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.log(`stderr: ${stderr}`);
+          return;
+      }
+      console.log(`stdout: ${stdout}`);
+  });
+
     console.log('Step 1');
 
     const ls = spawn(`git tag -l --sort=-version:refname "build/[0-9]*"`);
