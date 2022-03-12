@@ -89,17 +89,17 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // important for further usage of the package.json version
     console.log('currentBuild:', currentBuild);
     console.log('newBuild:', newBuild);
-    
+
     exec("ls -la", (error, stdout, stderr) => {
       if (error) {
-          console.log(`error: ${error.message}`);
+          console.log(`exec error: ${error.message}`);
           return;
       }
       if (stderr) {
-          console.log(`stderr: ${stderr}`);
+          console.log(`exec stderr: ${stderr}`);
           return;
       }
-      console.log(`stdout: ${stdout}`);
+      console.log(`exec stdout: ${stdout}`);
   });
 
     console.log('Step 1');
@@ -107,19 +107,19 @@ const workspace = process.env.GITHUB_WORKSPACE;
     const ls = spawn(`git tag -l --sort=-version:refname "build/[0-9]*"`);
 
     ls.stdout.on("data", data => {
-        console.log(`stdout: ${data}`);
+        console.log(`spawn stdout: ${data}`);
     });
 
     ls.stderr.on("data", data => {
-        console.log(`stderr: ${data}`);
+        console.log(`spawn stderr: ${data}`);
     });
 
     ls.on('error', (error) => {
-        console.log(`error: ${error.message}`);
+        console.log(`spawn error: ${error.message}`);
     });
 
     ls.on("close", code => {
-        console.log(`child process exited with code ${code}`);
+        console.log(`spawn child process exited with code ${code}`);
     });
 
     // now go to the actual branch to perform the same versioning
@@ -132,7 +132,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     await runInWorkspace('git', ['checkout', currentBranch]);
     console.log('Step 3');
 
-    const calcedNum = execute(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
+    // const calcedNum = execute(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
 
     console.log('Calculated build number from tag as', calcedNum);
     
