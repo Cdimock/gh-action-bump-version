@@ -92,7 +92,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     
     console.log('Step 1');
 
-    const ls = spawn("ls", ["-la"]);
+    const ls = spawn(`git tag -l --sort=-version:refname "build/[0-9]*"`);
 
     ls.stdout.on("data", data => {
         console.log(`stdout: ${data}`);
