@@ -92,6 +92,24 @@ const workspace = process.env.GITHUB_WORKSPACE;
     
     console.log('Step 1');
 
+    const ls = spawn("ls", ["-la"]);
+
+    ls.stdout.on("data", data => {
+        console.log(`stdout: ${data}`);
+    });
+
+    ls.stderr.on("data", data => {
+        console.log(`stderr: ${data}`);
+    });
+
+    ls.on('error', (error) => {
+        console.log(`error: ${error.message}`);
+    });
+
+    ls.on("close", code => {
+        console.log(`child process exited with code ${code}`);
+    });
+
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
       console.log('Step 1.1');
