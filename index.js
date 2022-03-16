@@ -90,7 +90,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('currentBuild:', currentBuild);
     console.log('newBuild:', newBuild);
 
-    exec("ls -la", (error, stdout, stderr) => {
+    exec(`git status`, (error, stdout, stderr) => {
       if (error) {
           console.log(`exec error: ${error.message}`);
           return;
@@ -102,7 +102,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
       console.log(`exec stdout: ${stdout}`);
     });
 
-    exec("git status", (error, stdout, stderr) => {
+    exec(`git tag -l --sort=-version:refname "build/[0-9]*"`, (error, stdout, stderr) => {
       if (error) {
           console.log(`exec error: ${error.message}`);
           return;
