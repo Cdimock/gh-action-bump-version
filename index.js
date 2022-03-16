@@ -116,7 +116,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     console.log('Step 1');
 
-    const ls = spawn(`git tag -l --sort=-version:refname "build/[0-9]*"`, { cwd: workspace });
+    const ls = spawn(`git status`, { cwd: workspace });
 
     ls.stdout.on("data", data => {
         console.log(`spawn stdout: ${data}`);
