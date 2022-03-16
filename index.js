@@ -102,6 +102,18 @@ const workspace = process.env.GITHUB_WORKSPACE;
       console.log(`exec stdout: ${stdout}`);
     });
 
+    exec("git tag -l", (error, stdout, stderr) => {
+      if (error) {
+          console.log(`exec error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.log(`exec stderr: ${stderr}`);
+          return;
+      }
+      console.log(`exec stdout: ${stdout}`);
+    });
+
     console.log('Step 1');
 
     const ls = spawn(`git tag -l --sort=-version:refname "build/[0-9]*"`);
