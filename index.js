@@ -102,7 +102,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
       console.log(`exec stdout: ${stdout}`);
     });
 
-    exec("git tag -l", (error, stdout, stderr) => {
+    exec("git status", (error, stdout, stderr) => {
       if (error) {
           console.log(`exec error: ${error.message}`);
           return;
