@@ -22,7 +22,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
-ds
+
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: Build Number bump to {{buildNumber}}';
   console.log('commit messages:', messages);
 
