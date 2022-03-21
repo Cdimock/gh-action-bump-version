@@ -151,7 +151,8 @@ const workspace = process.env.GITHUB_WORKSPACE;
     //update build Number here
     updateBuildNumber(newBuild);
 
-    await runInWorkspace('git', ['tag']);
+    var output = await runInWorkspace('git', ['tag']);
+    console.log(`Out: ${output}`);
     
     console.log('buildNumber in package.json', getPackageJson().buildNumber);
     try {
