@@ -92,26 +92,26 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     exec(`git status`, (error, stdout, stderr) => {
       if (error) {
-          console.log(`exec error: ${error.message}`);
+          console.log(`exec 1 error: ${error.message}`);
           return;
       }
       if (stderr) {
-          console.log(`exec stderr: ${stderr}`);
+          console.log(`exec 1 stderr: ${stderr}`);
           return;
       }
-      console.log(`exec stdout: ${stdout}`);
+      console.log(`exec 1 stdout: ${stdout}`);
     });
 
     exec(`git tag -l --sort=-version:refname "build/[0-9]*"`, (error, stdout, stderr) => {
       if (error) {
-          console.log(`exec error: ${error.message}`);
+          console.log(`exec 2 error: ${error.message}`);
           return;
       }
       if (stderr) {
-          console.log(`exec stderr: ${stderr}`);
+          console.log(`exec 2 stderr: ${stderr}`);
           return;
       }
-      console.log(`exec stdout: ${stdout}`);
+      console.log(`exec 2 stdout: ${stdout}`);
     });
 
     console.log('Step 1');
@@ -150,6 +150,8 @@ const workspace = process.env.GITHUB_WORKSPACE;
     
     //update build Number here
     updateBuildNumber(newBuild);
+
+    await runInWorkspace('git', ['tag']);
     
     console.log('buildNumber in package.json', getPackageJson().buildNumber);
     try {
