@@ -124,9 +124,6 @@ const workspace = process.env.GITHUB_WORKSPACE;
     
     //update build Number here
     updateBuildNumber(nextBuildNumber);
-
-    var output = await runInWorkspace('git', ['tag']);
-    console.log(`Out: ${output}`);
     
     console.log('buildNumber in package.json', getPackageJson().buildNumber);
     try {
@@ -171,7 +168,7 @@ function updateBuildNumber(buildNumber) {
   fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(err) {
     if (err) return console.log(err);
     // console.log(JSON.stringify(file));
-    console.log('writing to ' + fileName);
+    // console.log('writing to ' + fileName);
   });
 }
 
@@ -220,17 +217,17 @@ function runInWorkspace(command, args) {
   //return execa(command, args, { cwd: workspace });
 }
 
-function execute(command) {
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return error.message;
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return stderr;
-    }
-    console.log(`stdout: ${stdout}`);
-    return stdout;
-});
-}
+// function execute(command) {
+//   exec(command, (error, stdout, stderr) => {
+//     if (error) {
+//         console.log(`error: ${error.message}`);
+//         return error.message;
+//     }
+//     if (stderr) {
+//         console.log(`stderr: ${stderr}`);
+//         return stderr;
+//     }
+//     console.log(`stdout: ${stdout}`);
+//     return stdout;
+// });
+// }
