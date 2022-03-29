@@ -63,8 +63,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   try {
     const currentVersion = pkg.version.toString();
     const currentBuild = pkg.buildNumber.toString();
-    const newBuild = parseInt(currentBuild) + 1;
-    const buildTag = `${tagPrefix}${newBuild}`;
+    // const newBuild = parseInt(currentBuild) + 1;
     // set git user
     await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
     await runInWorkspace('git', [
@@ -85,11 +84,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
       // We want to override the branch that we are pulling / pushing to
       currentBranch = process.env['INPUT_TARGET-BRANCH'];
     }
-    console.log('currentBranch:', currentBranch);
+    console.log('Current Branch:', currentBranch);
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
-    console.log('currentBuild:', currentBuild);
-    console.log('newBuild:', newBuild);
+    console.log('Build Number in package.json from current branch:', currentBuild);
+    // console.log('newBuild:', newBuild);
 
     await runInWorkspace('git', ['fetch', '--all', '--tags']);
 
@@ -121,8 +120,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
     latestTag = (await execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`)).toString();
 
     console.log(`Found latest tag: ${latestTag}`);
-    let lastBuildNumber = latestTag.split("/")[1];
+    let lastBuildNumber = latestTag.split("/")[1].trim();
     let nextBuildNumber = parseInt(lastBuildNumber) + 1;
+    const buildTag = `${tagPrefix}${nextBuildNumber}`;
+
 
     console.log(`Last Build Number ${lastBuildNumber}`);
     console.log(`Next Build Number ${nextBuildNumber}`);
@@ -160,7 +161,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // console.log('Calculated build number from tag as', calcedNum);
     
     //update build Number here
-    updateBuildNumber(newBuild);
+    updateBuildNumber(nextBuildNumber);
 
     var output = await runInWorkspace('git', ['tag']);
     console.log(`Out: ${output}`);
