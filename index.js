@@ -122,8 +122,8 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log(`Found latest tag: ${latestTag}`);
     const lastBuildNumber = latestTag.split("/")[1].trim();
     const nextBuildNumber = parseInt(lastBuildNumber) + 1;
-    const newBuild = parseInt(currentBuild) + 1;
-    const buildTag = `${tagPrefix}${newBuild}`;
+    // const newBuild = parseInt(currentBuild) + 1;
+    const buildTag = `${tagPrefix}${nextBuildNumber}`;
 
 
     console.log(`Last Build Number ${lastBuildNumber}`);
@@ -162,7 +162,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // console.log('Calculated build number from tag as', calcedNum);
     
     //update build Number here
-    updateBuildNumber(newBuild);
+    updateBuildNumber(nextBuildNumber);
 
     var output = await runInWorkspace('git', ['tag']);
     console.log(`Out: ${output}`);
@@ -171,7 +171,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     try {
       // to support "actions/checkout@v1"
       if (process.env['INPUT_SKIP-COMMIT'] !== 'true') {
-        await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, newBuild)]);
+        await runInWorkspace('git', ['commit', '-a', '-m', commitMessage.replace(/{{buildNumber}}/g, nextBuildNumber)]);
       }
     } catch (e) {
       console.warn(
