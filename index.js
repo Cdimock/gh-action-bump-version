@@ -104,7 +104,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
       console.log(`exec 1 stdout: ${stdout}`);
     });
 
-    exec(`git tag -l --sort=-version:refname "build/[0-9]*"`, (error, stdout, stderr) => {
+    exec(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`, (error, stdout, stderr) => {
       if (error) {
           console.log(`exec 2 error: ${error.message}`);
           return;
@@ -118,23 +118,23 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     console.log('Step 1');
 
-    const ls = spawn(`git`, [`tag`], { cwd: workspace });
+    // const ls = spawn(`git`, [`tag`], { cwd: workspace });
 
-    ls.stdout.on("data", data => {
-        console.log(`spawn stdout: ${data}`);
-    });
+    // ls.stdout.on("data", data => {
+    //     console.log(`spawn stdout: ${data}`);
+    // });
 
-    ls.stderr.on("data", data => {
-        console.log(`spawn stderr: ${data}`);
-    });
+    // ls.stderr.on("data", data => {
+    //     console.log(`spawn stderr: ${data}`);
+    // });
 
-    ls.on('error', (error) => {
-        console.log(`spawn error: ${error.message}`);
-    });
+    // ls.on('error', (error) => {
+    //     console.log(`spawn error: ${error.message}`);
+    // });
 
-    ls.on("close", code => {
-        console.log(`spawn child process exited with code ${code}`);
-    });
+    // ls.on("close", code => {
+    //     console.log(`spawn child process exited with code ${code}`);
+    // });
 
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
