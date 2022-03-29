@@ -63,8 +63,8 @@ const workspace = process.env.GITHUB_WORKSPACE;
   try {
     const currentVersion = pkg.version.toString();
     const currentBuild = pkg.buildNumber.toString();
-    const newBuild = parseInt(currentBuild) + 1;
-    const buildTag = `${tagPrefix}${newBuild}`;
+    // const newBuild = parseInt(currentBuild) + 1;
+    
     // set git user
     await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
     await runInWorkspace('git', [
@@ -85,38 +85,13 @@ const workspace = process.env.GITHUB_WORKSPACE;
       // We want to override the branch that we are pulling / pushing to
       currentBranch = process.env['INPUT_TARGET-BRANCH'];
     }
-    console.log('currentBranch:', currentBranch);
+    
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
-    console.log('currentBuild:', currentBuild);
-    console.log('newBuild:', newBuild);
+    
+    // console.log('newBuild:', newBuild);
 
     await runInWorkspace('git', ['fetch', '--all', '--tags']);
-
-    // exec(`git status`, (error, stdout, stderr) => {
-    //   if (error) {
-    //       console.log(`exec 1 error: ${error.message}`);
-    //       return;
-    //   }
-    //   if (stderr) {
-    //       console.log(`exec 1 stderr: ${stderr}`);
-    //       return;
-    //   }
-    //   console.log(`exec 1 stdout: ${stdout}`);
-    // });
-
-    // execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`, (error, stdout, stderr) => {
-    //   if (error) {
-    //       console.log(`exec 2 error: ${error.message}`);
-    //       return;
-    //   }
-    //   if (stderr) {
-    //       console.log(`exec 2 stderr: ${stderr}`);
-    //       return;
-    //   }
-    //   console.log(`exec 2 stdout: ${stdout}`);
-    //   latestTag = stderr;
-    // });
 
     latestTag = (await execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`)).toString();
 
@@ -124,26 +99,14 @@ const workspace = process.env.GITHUB_WORKSPACE;
     let lastBuildNumber = latestTag.split("/")[1];
     let nextBuildNumber = parseInt(lastBuildNumber) + 1;
 
+    console.log('currentBranch:', currentBranch);
+    console.log('Build Number in package.json for branch:', currentBuild);
+
     console.log(`Last Build Number ${lastBuildNumber}`);
     console.log(`Next Build Number ${nextBuildNumber}`);
+    const buildTag = `${tagPrefix}${nextBuildNumber}`;
 
-    // const ls = spawn(`git`, [`tag`], { cwd: workspace });
-
-    // ls.stdout.on("data", data => {
-    //     console.log(`spawn stdout: ${data}`);
-    // });
-
-    // ls.stderr.on("data", data => {
-    //     console.log(`spawn stderr: ${data}`);
-    // });
-
-    // ls.on('error', (error) => {
-    //     console.log(`spawn error: ${error.message}`);
-    // });
-
-    // ls.on("close", code => {
-    //     console.log(`spawn child process exited with code ${code}`);
-    // });
+    
 
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
@@ -160,7 +123,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // console.log('Calculated build number from tag as', calcedNum);
     
     //update build Number here
-    updateBuildNumber(newBuild);
+    updateBuildNumber(nextBuildNumber);
 
     var output = await runInWorkspace('git', ['tag']);
     console.log(`Out: ${output}`);
