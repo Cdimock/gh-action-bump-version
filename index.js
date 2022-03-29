@@ -121,6 +121,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
     latestTag = await execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
 
     console.log(`Found latest tag: ${latestTag}`);
+    let lastBuildNumber = latestTag.split("/")[1];
+    let nextBuildNumber = parseInt(lastBuildNumber) + 1;
+
+    console.log(`Last Build Number ${lastBuildNumber}`);
+    console.log(`Next Build Number ${nextBuildNumber}`);
 
     // const ls = spawn(`git`, [`tag`], { cwd: workspace });
 
