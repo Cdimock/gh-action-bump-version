@@ -90,7 +90,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log('currentBuild:', currentBuild);
     console.log('newBuild:', newBuild);
 
-    await runInWorkspace('git', ['fetch']);
+    await runInWorkspace('git', ['fetch', '--all', '--tags']);
 
     exec(`git status`, (error, stdout, stderr) => {
       if (error) {
