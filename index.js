@@ -75,6 +75,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     let currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1];
     let isPullRequest = false;
+    let latestTag = "";
     if (process.env.GITHUB_HEAD_REF) {
       // Comes from a pull request
       currentBranch = process.env.GITHUB_HEAD_REF;
@@ -92,17 +93,17 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     await runInWorkspace('git', ['fetch', '--all', '--tags']);
 
-    exec(`git status`, (error, stdout, stderr) => {
-      if (error) {
-          console.log(`exec 1 error: ${error.message}`);
-          return;
-      }
-      if (stderr) {
-          console.log(`exec 1 stderr: ${stderr}`);
-          return;
-      }
-      console.log(`exec 1 stdout: ${stdout}`);
-    });
+    // exec(`git status`, (error, stdout, stderr) => {
+    //   if (error) {
+    //       console.log(`exec 1 error: ${error.message}`);
+    //       return;
+    //   }
+    //   if (stderr) {
+    //       console.log(`exec 1 stderr: ${stderr}`);
+    //       return;
+    //   }
+    //   console.log(`exec 1 stdout: ${stdout}`);
+    // });
 
     exec(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`, (error, stdout, stderr) => {
       if (error) {
@@ -114,9 +115,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
           return;
       }
       console.log(`exec 2 stdout: ${stdout}`);
+      latestTag = stderr;
     });
 
-    console.log('Step 1');
+    console.log(`Found latest tag: ${latestTag}`);
 
     // const ls = spawn(`git`, [`tag`], { cwd: workspace });
 
