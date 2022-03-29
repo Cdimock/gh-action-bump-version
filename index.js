@@ -62,7 +62,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   // GIT logic
   try {
     const currentVersion = pkg.version.toString();
-    const currentBuild = pkg.buildNumber.toString();
+    const currentBuildNumber = pkg.buildNumber.toString();
     
     // set git user
     await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
@@ -74,7 +74,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
     let currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1];
     let isPullRequest = false;
-    let latestTag = "";
+
     if (process.env.GITHUB_HEAD_REF) {
       // Comes from a pull request
       currentBranch = process.env.GITHUB_HEAD_REF;
@@ -85,67 +85,23 @@ const workspace = process.env.GITHUB_WORKSPACE;
       currentBranch = process.env['INPUT_TARGET-BRANCH'];
     }
     console.log('Current Branch:', currentBranch);
+    console.log('Build Number in package.json from current branch:', currentBuildNumber);
     // do it in the current checked out github branch (DETACHED HEAD)
     // important for further usage of the package.json version
-    console.log('Build Number in package.json from current branch:', currentBuild);
-    // console.log('newBuild:', newBuild);
 
+    // Fetch all tags
     await runInWorkspace('git', ['fetch', '--all', '--tags']);
 
-    // exec(`git status`, (error, stdout, stderr) => {
-    //   if (error) {
-    //       console.log(`exec 1 error: ${error.message}`);
-    //       return;
-    //   }
-    //   if (stderr) {
-    //       console.log(`exec 1 stderr: ${stderr}`);
-    //       return;
-    //   }
-    //   console.log(`exec 1 stdout: ${stdout}`);
-    // });
-
-    // execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`, (error, stdout, stderr) => {
-    //   if (error) {
-    //       console.log(`exec 2 error: ${error.message}`);
-    //       return;
-    //   }
-    //   if (stderr) {
-    //       console.log(`exec 2 stderr: ${stderr}`);
-    //       return;
-    //   }
-    //   console.log(`exec 2 stdout: ${stdout}`);
-    //   latestTag = stderr;
-    // });
-
-    latestTag = (await execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`)).toString();
+    const latestTag = (await execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`)).toString();
 
     console.log(`Found latest tag: ${latestTag}`);
     const lastBuildNumber = latestTag.split("/")[1].trim();
     const nextBuildNumber = parseInt(lastBuildNumber) + 1;
-    // const newBuild = parseInt(currentBuild) + 1;
     const buildTag = `${tagPrefix}${nextBuildNumber}`;
 
 
     console.log(`Last Build Number ${lastBuildNumber}`);
     console.log(`Next Build Number ${nextBuildNumber}`);
-
-    // const ls = spawn(`git`, [`tag`], { cwd: workspace });
-
-    // ls.stdout.on("data", data => {
-    //     console.log(`spawn stdout: ${data}`);
-    // });
-
-    // ls.stderr.on("data", data => {
-    //     console.log(`spawn stderr: ${data}`);
-    // });
-
-    // ls.on('error', (error) => {
-    //     console.log(`spawn error: ${error.message}`);
-    // });
-
-    // ls.on("close", code => {
-    //     console.log(`spawn child process exited with code ${code}`);
-    // });
 
     // now go to the actual branch to perform the same versioning
     if (isPullRequest) {
@@ -153,19 +109,10 @@ const workspace = process.env.GITHUB_WORKSPACE;
       // First fetch to get updated local version of branch
       await runInWorkspace('git', ['fetch']);
     }
-    console.log('Step 2');
     await runInWorkspace('git', ['checkout', currentBranch]);
-    console.log('Step 3');
-
-    // const calcedNum = execute(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
-
-    // console.log('Calculated build number from tag as', calcedNum);
     
     //update build Number here
     updateBuildNumber(nextBuildNumber);
-
-    var output = await runInWorkspace('git', ['tag']);
-    console.log(`Out: ${output}`);
     
     console.log('buildNumber in package.json', getPackageJson().buildNumber);
     try {
@@ -209,8 +156,6 @@ function updateBuildNumber(buildNumber) {
       
   fs.writeFile(fileName, JSON.stringify(file, null, 2), function writeJSON(err) {
     if (err) return console.log(err);
-    // console.log(JSON.stringify(file));
-    console.log('writing to ' + fileName);
   });
 }
 
@@ -257,19 +202,4 @@ function runInWorkspace(command, args) {
     });
   });
   //return execa(command, args, { cwd: workspace });
-}
-
-function execute(command) {
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return error.message;
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return stderr;
-    }
-    console.log(`stdout: ${stdout}`);
-    return stdout;
-});
 }
