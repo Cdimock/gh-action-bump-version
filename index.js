@@ -105,18 +105,20 @@ const workspace = process.env.GITHUB_WORKSPACE;
     //   console.log(`exec 1 stdout: ${stdout}`);
     // });
 
-    exec(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`, (error, stdout, stderr) => {
-      if (error) {
-          console.log(`exec 2 error: ${error.message}`);
-          return;
-      }
-      if (stderr) {
-          console.log(`exec 2 stderr: ${stderr}`);
-          return;
-      }
-      console.log(`exec 2 stdout: ${stdout}`);
-      latestTag = stderr;
-    });
+    // execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`, (error, stdout, stderr) => {
+    //   if (error) {
+    //       console.log(`exec 2 error: ${error.message}`);
+    //       return;
+    //   }
+    //   if (stderr) {
+    //       console.log(`exec 2 stderr: ${stderr}`);
+    //       return;
+    //   }
+    //   console.log(`exec 2 stdout: ${stdout}`);
+    //   latestTag = stderr;
+    // });
+
+    latestTag = await execSync(`git tag -l --sort=-version:refname "build/[0-9]*"|head -n 1`);
 
     console.log(`Found latest tag: ${latestTag}`);
 
