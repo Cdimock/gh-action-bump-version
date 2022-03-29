@@ -63,7 +63,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   try {
     const currentVersion = pkg.version.toString();
     const currentBuild = pkg.buildNumber.toString();
-    // const newBuild = parseInt(currentBuild) + 1;
+    const newBuild = parseInt(currentBuild) + 1;
     // set git user
     await runInWorkspace('git', ['config', 'user.name', `"${process.env.GITHUB_USER || 'Automated Version Bump'}"`]);
     await runInWorkspace('git', [
@@ -122,7 +122,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     console.log(`Found latest tag: ${latestTag}`);
     let lastBuildNumber = latestTag.split("/")[1].trim();
     let nextBuildNumber = parseInt(lastBuildNumber) + 1;
-    const buildTag = `${tagPrefix}${nextBuildNumber}`;
+    const buildTag = `${tagPrefix}${newBuild}`;
 
 
     console.log(`Last Build Number ${lastBuildNumber}`);
@@ -161,7 +161,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
     // console.log('Calculated build number from tag as', calcedNum);
     
     //update build Number here
-    updateBuildNumber(nextBuildNumber);
+    updateBuildNumber(newBuild);
 
     var output = await runInWorkspace('git', ['tag']);
     console.log(`Out: ${output}`);
