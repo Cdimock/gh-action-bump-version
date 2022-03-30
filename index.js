@@ -20,7 +20,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   //   console.log("Couldn't find any commits in this event, incrementing patch version...");
   // }
 
-  // const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
+  const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
   // const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: Build Number bump to {{buildNumber}}';
