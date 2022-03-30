@@ -14,54 +14,11 @@ const workspace = process.env.GITHUB_WORKSPACE;
 
 (async () => {
   const pkg = getPackageJson();
-  // const event = process.env.GITHUB_EVENT_PATH ? require(process.env.GITHUB_EVENT_PATH) : {};
-
-  // if (!event.commits) {
-  //   console.log("Couldn't find any commits in this event, incrementing patch version...");
-  // }
-
   const tagPrefix = process.env['INPUT_TAG-PREFIX'] || '';
-  // const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
-
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: Build Number bump to {{buildNumber}}';
-  // console.log('commit messages:', messages);
-
-  // const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
-  // const commitMessageRegex = new RegExp(commitMessage.replace(/{{buildNumber}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+`), 'ig');
-
-  // let isVersionBump = false;
-
-  // if (bumpPolicy === 'all') {
-  //   isVersionBump = messages.find((message) => commitMessageRegex.test(message)) !== undefined;
-  // } else if (bumpPolicy === 'last-commit') {
-  //   isVersionBump = messages.length > 0 && commitMessageRegex.test(messages[messages.length - 1]);
-  // } else if (bumpPolicy === 'ignore') {
-  //   console.log('Ignoring any version bumps in commits...');
-  // } else {
-  //   console.warn(`Unknown bump policy: ${bumpPolicy}`);
-  // }
-
-  // if (isVersionBump) {
-  //   exitSuccess('No action necessary because we found a previous bump!');
-  //   return;
-  // }
-
-  // get default version bump
-  // let version = process.env.INPUT_DEFAULT;
-  // let foundWord = null;
-  // // get the pre-release prefix specified in action
-  // let preid = process.env.INPUT_PREID;
-
-  // // case: if user sets push to false, to skip pushing new tag/package.json
-  // const push = process.env['INPUT_PUSH'];
-  // if (push === 'false' || push === false) {
-  //   exitSuccess('User requested to skip pushing new tag and package.json. Finished.');
-  //   return;
-  // }
 
   // GIT logic
   try {
-    const currentVersion = pkg.version.toString();
     const currentBuildNumber = pkg.buildNumber.toString();
     
     // set git user
