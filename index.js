@@ -24,7 +24,7 @@ const workspace = process.env.GITHUB_WORKSPACE;
   // const messages = event.commits ? event.commits.map((commit) => commit.message + '\n' + commit.body) : [];
 
   const commitMessage = process.env['INPUT_COMMIT-MESSAGE'] || 'ci: Build Number bump to {{buildNumber}}';
-  console.log('commit messages:', messages);
+  // console.log('commit messages:', messages);
 
   // const bumpPolicy = process.env['INPUT_BUMP-POLICY'] || 'all';
   // const commitMessageRegex = new RegExp(commitMessage.replace(/{{buildNumber}}/g, `${tagPrefix}\\d+\\.\\d+\\.\\d+`), 'ig');
